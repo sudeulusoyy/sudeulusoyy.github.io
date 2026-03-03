@@ -6,16 +6,14 @@
     <title>Uyanma Vakti!</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
     <style>
-        /* TEMEL STİLLER VE GEÇİŞLER */
-        * {
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            height: 100%;
+            width: 100%;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
         }
-
         body {
-            height: 100vh;
-            width: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -23,22 +21,17 @@
             overflow: hidden;
             cursor: pointer;
             user-select: none;
-            transition: background 1.5s ease-in-out; /* Arka plan geçişi yumuşak */
-            
-            /* 1. AŞAMA (GECE) - Sofistike Derin Gradyan */
+            -webkit-tap-highlight-color: transparent; /* Mobilde dokunma parlaklığını gizler */
+            transition: background 1.5s ease-in-out;
             background: linear-gradient(135deg, #0a0e17 0%, #1a1e2e 100%);
         }
-
-        /* MODERN DÜZEN VE YAZI KONTEYNERİ */
         .container {
             text-align: center;
             z-index: 10;
             max-width: 80%;
             padding: 40px;
-            pointer-events: none; /* Metne değil, tüm ekrana tıklansın */
+            pointer-events: none;
         }
-
-        /* AŞAMA YAZILARI - TEMEL STİL VE GİZEMLİ PARLAMA */
         .stage-text {
             color: rgba(255, 255, 255, 0.85);
             font-family: 'Playfair Display', serif;
@@ -48,22 +41,14 @@
             line-height: 1.4;
             opacity: 1;
             transform: scale(1);
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); /* Modern animasyon eğrisi */
-            
-            /* İlk gizemli parlama efekti */
-            text-shadow: 0 0 10px rgba(100, 149, 237, 0.5), 
-                         0 0 20px rgba(100, 149, 237, 0.2);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            text-shadow: 0 0 10px rgba(100, 149, 237, 0.5), 0 0 20px rgba(100, 149, 237, 0.2);
         }
-
-        /* 2. AŞAMA (TEHDİT) - Glow Rengi Değişimi */
         .stage-text.phase-2 {
             font-size: 2.5rem;
             color: rgba(255, 255, 255, 0.9);
-            text-shadow: 0 0 10px rgba(255, 0, 127, 0.7), 
-                         0 0 20px rgba(255, 0, 127, 0.4);
+            text-shadow: 0 0 10px rgba(255, 0, 127, 0.7), 0 0 20px rgba(255, 0, 127, 0.4);
         }
-
-        /* 3. AŞAMA (BÜYÜK UYANIŞ) - Modern ve Güçlü Tipografi */
         .stage-text.phase-3 {
             font-family: 'Montserrat', sans-serif;
             font-style: normal;
@@ -71,23 +56,12 @@
             font-size: 3.5rem;
             text-transform: uppercase;
             letter-spacing: 3px;
-            color: #b91c1c; /* Koyu Kırmızı */
+            color: #b91c1c;
             text-shadow: none;
             line-height: 1.1;
         }
-
-        /* YAZI GEÇİŞLERİ İÇİN ANİMASYON SINIFLARI */
-        .fade-out {
-            opacity: 0;
-            transform: scale(0.95);
-        }
-
-        .fade-in {
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        /* ALTTAKİ İPUCU YAZISI */
+        .fade-out { opacity: 0; transform: scale(0.95); }
+        .fade-in { opacity: 1; transform: scale(1); }
         .hint {
             position: absolute;
             bottom: 40px;
@@ -99,14 +73,9 @@
             letter-spacing: 3px;
             text-transform: uppercase;
             animation: pulse 2.5s infinite;
+            pointer-events: none;
         }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 0.7; }
-        }
-
-        /* EMOJİ YAĞMURU (3. AŞAMA) */
+        @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.7; } }
         .emoji {
             position: absolute;
             top: -60px;
@@ -115,12 +84,7 @@
             pointer-events: none;
             z-index: 5;
         }
-
-        @keyframes fall {
-            to {
-                transform: translateY(110vh) rotate(360deg);
-            }
-        }
+        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -131,4 +95,76 @@
         <h1 id="stage-text" class="stage-text">Öğlen oldu öğlen...</h1>
     </div>
     
-    <div id="hint
+    <div id="hint" class="hint">Devam Etmek İçin Dokun</div>
+
+    <script>
+        const textEl = document.getElementById('stage-text');
+        const hintEl = document.getElementById('hint');
+        let step = 1;
+        const wakeUpEmojis = ['⏰', '☕', '🐓', '📢', '🌞', '🙄'];
+
+        // Tıklama algoritmasını daha güçlü hale getirdik (window.addEventListener)
+        window.addEventListener('click', () => {
+            if (step === 1) {
+                performTextTransition("Bugün de uyanamadın galiba 😒", "phase-2");
+                step = 2;
+            } 
+            else if (step === 2) {
+                hintEl.style.display = 'none';
+                textEl.classList.add('fade-out');
+                
+                setTimeout(() => {
+                    document.body.style.background = "linear-gradient(180deg, #FF9E7D 0%, #FFD700 100%)";
+                    textEl.innerText = "KALK ARTIK KALK!!!";
+                    textEl.className = "stage-text phase-3";
+                    textEl.classList.remove('fade-out');
+                    startEmojiRain();
+                }, 500);
+                
+                step = 3;
+            }
+        });
+
+        // Telefonların dokunma (touch) hassasiyetini de ekledik
+        window.addEventListener('touchstart', (e) => {
+            // Ekrana dokunulduğunda tıklama efekti yaratır
+            e.preventDefault(); 
+            window.click();
+        }, {passive: false});
+
+        function performTextTransition(newText, newClass) {
+            textEl.classList.add('fade-out');
+            setTimeout(() => {
+                textEl.innerText = newText;
+                if(newClass) textEl.classList.add(newClass);
+                textEl.classList.remove('fade-out');
+            }, 600);
+        }
+
+        function startEmojiRain() {
+            let emojiCount = 0;
+            const emojiTimer = setInterval(() => {
+                const emojiEl = document.createElement('div');
+                emojiEl.classList.add('emoji');
+                emojiEl.innerText = wakeUpEmojis[Math.floor(Math.random() * wakeUpEmojis.length)];
+                
+                const scale = Math.random() * 1.5 + 0.8;
+                emojiEl.style.left = Math.random() * 100 + 'vw';
+                emojiEl.style.transform = `scale(${scale})`;
+                
+                const duration = Math.random() * 2 + 1.2;
+                emojiEl.style.animationDuration = duration + 's';
+                
+                document.body.appendChild(emojiEl);
+
+                setTimeout(() => {
+                    emojiEl.remove();
+                }, duration * 1000);
+
+                emojiCount++;
+                if(emojiCount > 50) clearInterval(emojiTimer);
+            }, 250);
+        }
+    </script>
+</body>
+</html>
