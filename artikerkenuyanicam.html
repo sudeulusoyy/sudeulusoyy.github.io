@@ -1,4 +1,4 @@
-                    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
@@ -21,7 +21,7 @@
             overflow: hidden;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
-            transition: background 1.5s ease-in-out;
+            transition: background 1.5s ease-in-out; /* Arka plan 1.5 saniyede yumuşakça değişir */
             background: linear-gradient(135deg, #0a0e17 0%, #1a1e2e 100%);
         }
         
@@ -42,6 +42,8 @@
             padding: 20px;
             pointer-events: none;
         }
+        
+        /* Yazı Geçiş Animasyonunun Hızı - 0.6 Saniye (Daha akıcı) */
         .stage-text {
             color: rgba(255, 255, 255, 0.85);
             font-family: 'Playfair Display', serif;
@@ -51,11 +53,10 @@
             line-height: 1.4;
             opacity: 1;
             transform: scale(1);
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
             text-shadow: 0 0 10px rgba(100, 149, 237, 0.5), 0 0 20px rgba(100, 149, 237, 0.2);
         }
         
-        /* 2. AŞAMA YAZI STİLİ - ARTIK EMOJİSİZ */
         .stage-text.phase-2 {
             font-size: 2.2rem;
             color: rgba(255, 255, 255, 0.9);
@@ -73,7 +74,12 @@
             text-shadow: none;
             line-height: 1.4;
         }
-        .fade-out { opacity: 0; transform: scale(0.95); }
+        
+        .fade-out { 
+            opacity: 0 !important; 
+            transform: scale(0.95) !important; 
+        }
+        
         .hint {
             position: absolute;
             bottom: 40px;
@@ -86,8 +92,10 @@
             text-transform: uppercase;
             animation: pulse 2.5s infinite;
             pointer-events: none;
+            transition: opacity 0.5s ease;
         }
         @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.7; } }
+        
         .emoji {
             position: absolute;
             top: -60px;
@@ -117,7 +125,7 @@
         const touchLayer = document.getElementById('touch-layer');
         
         let step = 1;
-        let isTransitioning = false; 
+        let isTransitioning = false; // Hızlı tıklamalarda animasyonun bozulmasını engeller
         
         const wakeUpEmojis = ['🌞', '✨', '🌻', '🥱', '💛'];
 
@@ -127,27 +135,33 @@
 
             if (step === 1) {
                 isTransitioning = true;
-                // --- 2. AŞAMA YAZISI BURADA DÜZENLENDİ ---
-                // "😒" Emojisi kaldırıldı.
                 performTextTransition("Yine uyanamadın galiba...", "phase-2");
                 step = 2;
+                // Animasyon bitene kadar tıklamayı kilitler
                 setTimeout(() => { isTransitioning = false; }, 800);
             } 
             else if (step === 2) {
                 isTransitioning = true;
-                hintEl.style.display = 'none';
-                textEl.classList.add('fade-out');
+                hintEl.style.opacity = '0'; // İpucu yazısı yumuşakça kaybolur
+                textEl.classList.add('fade-out'); // Yazı yumuşakça silinir
                 
+                // Tam yazı silindiğinde arka planı ve yeni yazıyı getirir
                 setTimeout(() => {
                     document.body.style.background = "linear-gradient(180deg, #FF9E7D 0%, #FFD700 100%)";
                     
-                    // Final Yazısı ve Tatlı Emoji
                     textEl.innerHTML = "SEVGİLİ ORHAN,<br>BUGÜN DE UYANAMADIN AMA<br>GÜNAYDIN! 🌞";
                     
-                    textEl.className = "stage-text phase-3";
-                    textEl.classList.remove('fade-out');
+                    textEl.classList.remove('phase-2');
+                    textEl.classList.add('phase-3');
+                    
+                    // Tarayıcıya yeni yazıyı işlemesi için çok ufak bir süre tanıyıp, fade-out'u kaldırırız
+                    // Böylece final yazısı aniden patlamaz, yumuşakça büyüyerek gelir
+                    setTimeout(() => {
+                        textEl.classList.remove('fade-out');
+                    }, 50);
+                    
                     startEmojiRain();
-                }, 500);
+                }, 600); // CSS'teki 0.6s geçiş süresiyle tam senkronize
                 
                 step = 3;
             }
@@ -156,4 +170,44 @@
         touchLayer.addEventListener('pointerdown', handleTap);
 
         function performTextTransition(newText, newClass) {
-            textEl.classList.add('fade
+            textEl.classList.add('fade-out');
+            
+            // Yazının tamamen kaybolmasını bekler (600ms)
+            setTimeout(() => {
+                textEl.innerText = newText;
+                if(newClass) textEl.classList.add(newClass);
+                
+                // Yeni yazıyı yumuşakça ekrana getirir
+                setTimeout(() => {
+                    textEl.classList.remove('fade-out');
+                }, 50);
+            }, 600);
+        }
+
+        function startEmojiRain() {
+            let emojiCount = 0;
+            const emojiTimer = setInterval(() => {
+                const emojiEl = document.createElement('div');
+                emojiEl.classList.add('emoji');
+                emojiEl.innerText = wakeUpEmojis[Math.floor(Math.random() * wakeUpEmojis.length)];
+                
+                const scale = Math.random() * 1.5 + 0.8;
+                emojiEl.style.left = Math.random() * 100 + 'vw';
+                emojiEl.style.transform = `scale(${scale})`;
+                
+                const duration = Math.random() * 2 + 1.2;
+                emojiEl.style.animationDuration = duration + 's';
+                
+                document.body.appendChild(emojiEl);
+
+                setTimeout(() => {
+                    emojiEl.remove();
+                }, duration * 1000);
+
+                emojiCount++;
+                if(emojiCount > 50) clearInterval(emojiTimer);
+            }, 250);
+        }
+    </script>
+</body>
+</html>
