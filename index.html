@@ -9,37 +9,64 @@
             margin: 0;
             padding: 0;
             height: 100vh;
-            background: linear-gradient(135deg, #fff3e0, #ffe0b2); /* Tatlı turuncu/şeftali arka plan */
+            /* Daha soft pudra pembesi tonları */
+            background: linear-gradient(180deg, #ffe6f2 0%, #ffcce6 100%);
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Georgia', serif; /* Görseldeki gibi daha zarif ve şık bir font */
             overflow: hidden;
-            cursor: pointer; /* Tıklanabilir hissi verir */
+            cursor: pointer;
             user-select: none;
         }
-        .container {
+        .top-text {
+            position: absolute;
+            top: 50px;
+            color: #d81b60; /* Yazılar için tatlı, uyumlu bir koyu pembe */
+            font-size: 1.1rem;
+            letter-spacing: 5px; /* Harflerin arasını açarak o şık görüntüyü verir */
+            font-weight: bold;
+            opacity: 0.7;
+        }
+        .center-container {
             text-align: center;
             z-index: 10;
-            pointer-events: none; /* Kutuya değil arkaya tıklanmasını sağlar */
-            background: rgba(255, 255, 255, 0.5);
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(230, 81, 0, 0.1);
+            pointer-events: none;
         }
-        .main-text {
-            color: #e65100;
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-            margin-top: 0;
+        .click-me {
+            color: #c2185b;
+            font-size: 1.3rem;
+            letter-spacing: 3px;
             animation: pulse 1.5s infinite;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
         }
-        .greeting {
-            color: #d84315;
+        .click-me-icon {
+            font-size: 4rem; /* Tıkla bana yazısının üstündeki büyük portakal */
+        }
+        .message-box {
+            display: none; /* Başlangıçta gizli */
+            color: #ad1457;
             font-size: 1.4rem;
+            line-height: 1.8;
             font-weight: bold;
-            line-height: 1.6;
-            margin: 0;
+            opacity: 0;
+            transform: translateY(20px); /* Aşağıdan yukarı tatlı bir geliş efekti */
+            transition: all 1s ease;
+        }
+        .message-box.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .balim {
+            font-size: 2.2rem;
+            color: #d81b60;
+            display: block;
+            margin-top: 15px;
         }
         @keyframes pulse {
             0% { transform: scale(1); }
@@ -52,6 +79,7 @@
             font-size: 2rem;
             animation: fall linear forwards;
             pointer-events: none;
+            z-index: 5;
         }
         @keyframes fall {
             to { transform: translateY(110vh) rotate(360deg); }
@@ -59,45 +87,63 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1 class="main-text">Bana Tıkla 🍊</h1>
-        <p class="greeting">Antalya'nın portakalı,<br>Finike'nin kaymağı,<br>Günaydın! ☀️🍯</p>
+    <div class="top-text">SANA ÖZEL BİR SÜRPRİZ</div>
+
+    <div class="center-container">
+        <div class="click-me" id="click-me">
+            <span class="click-me-icon">🍊</span>
+            <span>TIKLA BANA</span>
+        </div>
+
+        <div class="message-box" id="message-box">
+            Antalya'nın portakalı,<br>
+            Finike'nin kaymağı...
+            <span class="balim">Günaydın Balım! ☀️🍯</span>
+        </div>
     </div>
 
     <script>
-        // Düşecek emojiler
         const emojis = ['☀️', '🍯', '🧡', '🍊'];
+        let isClicked = false;
         
-        // Ekrana tıklandığında çalışacak bölüm
         document.body.addEventListener('click', (e) => {
-            // Her tıklamada 3-4 arası rastgele sayıda emoji düşsün
-            const dropCount = Math.floor(Math.random() * 2) + 3; 
+            // İlk tıklamayı algıla ve yazıları değiştir
+            if (!isClicked) {
+                document.getElementById('click-me').style.display = 'none';
+                const msgBox = document.getElementById('message-box');
+                msgBox.style.display = 'block';
+                
+                // Animasyonun yumuşak çalışması için minik bir gecikme
+                setTimeout(() => {
+                    msgBox.classList.add('show');
+                }, 50);
+                
+                isClicked = true;
+            }
+            
+            // Her tıklamada rastgele sayıda (3-5 arası) emoji düşür
+            const dropCount = Math.floor(Math.random() * 3) + 3; 
             
             for(let i = 0; i < dropCount; i++) {
                 setTimeout(() => {
                     const emojiEl = document.createElement('div');
                     emojiEl.classList.add('emoji');
-                    
-                    // Rastgele emoji seçimi
                     emojiEl.innerText = emojis[Math.floor(Math.random() * emojis.length)];
                     
-                    // Ekranın üst kısmında rastgele bir yatay konumdan düşsün
+                    // Ekranın rastgele bir yerinden düşsün
                     emojiEl.style.left = Math.random() * 100 + 'vw';
                     
-                    // Rastgele düşme süresi (2 ile 4.5 saniye arası)
                     const duration = Math.random() * 2.5 + 2; 
                     emojiEl.style.animationDuration = duration + 's';
-                    
-                    // Boyutları biraz farklı olsun
-                    emojiEl.style.fontSize = (Math.random() * 1.5 + 1.5) + 'rem'; 
+                    emojiEl.style.fontSize = (Math.random() * 1.5 + 1.2) + 'rem'; 
                     
                     document.body.appendChild(emojiEl);
 
-                    // Animasyon bitince emojiyi ekrandan sil
+                    // Ekranda birikmemeleri için animasyon bitince sil
                     setTimeout(() => {
                         emojiEl.remove();
                     }, duration * 1000);
-                }, i * 100); 
+                }, i * 150); 
             }
         });
     </script>
