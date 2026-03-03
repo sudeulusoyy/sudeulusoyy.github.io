@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sana Özel Bir Sürpriz!</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background: linear-gradient(135deg, #fff3e0, #ffe0b2); /* Tatlı turuncu/şeftali arka plan */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            cursor: pointer; /* Tıklanabilir hissi verir */
+            user-select: none;
+        }
+        .container {
+            text-align: center;
+            z-index: 10;
+            pointer-events: none; /* Kutuya değil arkaya tıklanmasını sağlar */
+            background: rgba(255, 255, 255, 0.5);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(230, 81, 0, 0.1);
+        }
+        .main-text {
+            color: #e65100;
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            margin-top: 0;
+            animation: pulse 1.5s infinite;
+        }
+        .greeting {
+            color: #d84315;
+            font-size: 1.4rem;
+            font-weight: bold;
+            line-height: 1.6;
+            margin: 0;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .emoji {
+            position: absolute;
+            top: -50px;
+            font-size: 2rem;
+            animation: fall linear forwards;
+            pointer-events: none;
+        }
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="main-text">Bana Tıkla 🍊</h1>
+        <p class="greeting">Antalya'nın portakalı,<br>Finike'nin kaymağı,<br>Günaydın! ☀️🍯</p>
+    </div>
+
+    <script>
+        // Düşecek emojiler
+        const emojis = ['☀️', '🍯', '🧡', '🍊'];
+        
+        // Ekrana tıklandığında çalışacak bölüm
+        document.body.addEventListener('click', (e) => {
+            // Her tıklamada 3-4 arası rastgele sayıda emoji düşsün
+            const dropCount = Math.floor(Math.random() * 2) + 3; 
+            
+            for(let i = 0; i < dropCount; i++) {
+                setTimeout(() => {
+                    const emojiEl = document.createElement('div');
+                    emojiEl.classList.add('emoji');
+                    
+                    // Rastgele emoji seçimi
+                    emojiEl.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+                    
+                    // Ekranın üst kısmında rastgele bir yatay konumdan düşsün
+                    emojiEl.style.left = Math.random() * 100 + 'vw';
+                    
+                    // Rastgele düşme süresi (2 ile 4.5 saniye arası)
+                    const duration = Math.random() * 2.5 + 2; 
+                    emojiEl.style.animationDuration = duration + 's';
+                    
+                    // Boyutları biraz farklı olsun
+                    emojiEl.style.fontSize = (Math.random() * 1.5 + 1.5) + 'rem'; 
+                    
+                    document.body.appendChild(emojiEl);
+
+                    // Animasyon bitince emojiyi ekrandan sil
+                    setTimeout(() => {
+                        emojiEl.remove();
+                    }, duration * 1000);
+                }, i * 100); 
+            }
+        });
+    </script>
+</body>
+</html>
