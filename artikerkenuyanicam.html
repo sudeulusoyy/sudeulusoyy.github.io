@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+                    <!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
@@ -20,12 +20,11 @@
             font-family: 'Montserrat', sans-serif;
             overflow: hidden;
             user-select: none;
-            -webkit-tap-highlight-color: transparent; /* Tıklama parlamasını gizler */
+            -webkit-tap-highlight-color: transparent;
             transition: background 1.5s ease-in-out;
             background: linear-gradient(135deg, #0a0e17 0%, #1a1e2e 100%);
         }
         
-        /* HER TIKLAMAYI YAKALAYACAK GÖRÜNMEZ KATMAN */
         #touch-layer {
             position: absolute;
             top: 0;
@@ -39,9 +38,9 @@
         .container {
             text-align: center;
             z-index: 10;
-            max-width: 80%;
-            padding: 40px;
-            pointer-events: none; /* Metinlerin tıklanmayı engellemesini önler */
+            max-width: 90%;
+            padding: 20px;
+            pointer-events: none;
         }
         .stage-text {
             color: rgba(255, 255, 255, 0.85);
@@ -55,21 +54,24 @@
             transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
             text-shadow: 0 0 10px rgba(100, 149, 237, 0.5), 0 0 20px rgba(100, 149, 237, 0.2);
         }
+        
+        /* 2. AŞAMA YAZI STİLİ - ARTIK EMOJİSİZ */
         .stage-text.phase-2 {
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             color: rgba(255, 255, 255, 0.9);
             text-shadow: 0 0 10px rgba(255, 0, 127, 0.7), 0 0 20px rgba(255, 0, 127, 0.4);
         }
+        
         .stage-text.phase-3 {
             font-family: 'Montserrat', sans-serif;
             font-style: normal;
             font-weight: 700;
-            font-size: 3.5rem;
+            font-size: 1.8rem;
             text-transform: uppercase;
-            letter-spacing: 3px;
+            letter-spacing: 2px;
             color: #b91c1c;
             text-shadow: none;
-            line-height: 1.1;
+            line-height: 1.4;
         }
         .fade-out { opacity: 0; transform: scale(0.95); }
         .hint {
@@ -112,20 +114,22 @@
     <script>
         const textEl = document.getElementById('stage-text');
         const hintEl = document.getElementById('hint');
-        const touchLayer = document.getElementById('touch-layer'); // Görünmez katmanı seçtik
+        const touchLayer = document.getElementById('touch-layer');
         
         let step = 1;
-        let isTransitioning = false; // Hızlı hızlı tıklanıp bozulmasını engeller
+        let isTransitioning = false; 
         
-        const wakeUpEmojis = ['⏰', '☕', '🐓', '📢', '🌞', '🙄'];
+        const wakeUpEmojis = ['🌞', '✨', '🌻', '🥱', '💛'];
 
         function handleTap(e) {
-            e.preventDefault(); // Ekranın kaymasını vb. önler
+            e.preventDefault(); 
             if (isTransitioning) return; 
 
             if (step === 1) {
                 isTransitioning = true;
-                performTextTransition("Bugün de uyanamadın galiba 😒", "phase-2");
+                // --- 2. AŞAMA YAZISI BURADA DÜZENLENDİ ---
+                // "😒" Emojisi kaldırıldı.
+                performTextTransition("Yine uyanamadın galiba...", "phase-2");
                 step = 2;
                 setTimeout(() => { isTransitioning = false; }, 800);
             } 
@@ -136,7 +140,10 @@
                 
                 setTimeout(() => {
                     document.body.style.background = "linear-gradient(180deg, #FF9E7D 0%, #FFD700 100%)";
-                    textEl.innerText = "KALK ARTIK KALK!!!";
+                    
+                    // Final Yazısı ve Tatlı Emoji
+                    textEl.innerHTML = "SEVGİLİ ORHAN,<br>BUGÜN DE UYANAMADIN AMA<br>GÜNAYDIN! 🌞";
+                    
                     textEl.className = "stage-text phase-3";
                     textEl.classList.remove('fade-out');
                     startEmojiRain();
@@ -146,43 +153,7 @@
             }
         }
 
-        // TELEFON VE BİLGİSAYAR İÇİN KESİN TIKLAMA ÇÖZÜMÜ
         touchLayer.addEventListener('pointerdown', handleTap);
 
         function performTextTransition(newText, newClass) {
-            textEl.classList.add('fade-out');
-            setTimeout(() => {
-                textEl.innerText = newText;
-                if(newClass) textEl.classList.add(newClass);
-                textEl.classList.remove('fade-out');
-            }, 600);
-        }
-
-        function startEmojiRain() {
-            let emojiCount = 0;
-            const emojiTimer = setInterval(() => {
-                const emojiEl = document.createElement('div');
-                emojiEl.classList.add('emoji');
-                emojiEl.innerText = wakeUpEmojis[Math.floor(Math.random() * wakeUpEmojis.length)];
-                
-                const scale = Math.random() * 1.5 + 0.8;
-                emojiEl.style.left = Math.random() * 100 + 'vw';
-                emojiEl.style.transform = `scale(${scale})`;
-                
-                const duration = Math.random() * 2 + 1.2;
-                emojiEl.style.animationDuration = duration + 's';
-                
-                document.body.appendChild(emojiEl);
-
-                setTimeout(() => {
-                    emojiEl.remove();
-                }, duration * 1000);
-
-                emojiCount++;
-                if(emojiCount > 50) clearInterval(emojiTimer);
-            }, 250);
-        }
-    </script>
-</body>
-</html>
-
+            textEl.classList.add('fade
