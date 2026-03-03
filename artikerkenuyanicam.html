@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uyanma Vakti!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
+    <style>
+        /* TEMEL STİLLER VE GEÇİŞLER */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Montserrat', sans-serif;
+            overflow: hidden;
+            cursor: pointer;
+            user-select: none;
+            transition: background 1.5s ease-in-out; /* Arka plan geçişi yumuşak */
+            
+            /* 1. AŞAMA (GECE) - Sofistike Derin Gradyan */
+            background: linear-gradient(135deg, #0a0e17 0%, #1a1e2e 100%);
+        }
+
+        /* MODERN DÜZEN VE YAZI KONTEYNERİ */
+        .container {
+            text-align: center;
+            z-index: 10;
+            max-width: 80%;
+            padding: 40px;
+            pointer-events: none; /* Metne değil, tüm ekrana tıklansın */
+        }
+
+        /* AŞAMA YAZILARI - TEMEL STİL VE GİZEMLİ PARLAMA */
+        .stage-text {
+            color: rgba(255, 255, 255, 0.85);
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 2.2rem;
+            letter-spacing: 2px;
+            line-height: 1.4;
+            opacity: 1;
+            transform: scale(1);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); /* Modern animasyon eğrisi */
+            
+            /* İlk gizemli parlama efekti */
+            text-shadow: 0 0 10px rgba(100, 149, 237, 0.5), 
+                         0 0 20px rgba(100, 149, 237, 0.2);
+        }
+
+        /* 2. AŞAMA (TEHDİT) - Glow Rengi Değişimi */
+        .stage-text.phase-2 {
+            font-size: 2.5rem;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0 0 10px rgba(255, 0, 127, 0.7), 
+                         0 0 20px rgba(255, 0, 127, 0.4);
+        }
+
+        /* 3. AŞAMA (BÜYÜK UYANIŞ) - Modern ve Güçlü Tipografi */
+        .stage-text.phase-3 {
+            font-family: 'Montserrat', sans-serif;
+            font-style: normal;
+            font-weight: 700;
+            font-size: 3.5rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #b91c1c; /* Koyu Kırmızı */
+            text-shadow: none;
+            line-height: 1.1;
+        }
+
+        /* YAZI GEÇİŞLERİ İÇİN ANİMASYON SINIFLARI */
+        .fade-out {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+
+        .fade-in {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* ALTTAKİ İPUCU YAZISI */
+        .hint {
+            position: absolute;
+            bottom: 40px;
+            width: 100%;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.9rem;
+            font-weight: 400;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            animation: pulse 2.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.7; }
+        }
+
+        /* EMOJİ YAĞMURU (3. AŞAMA) */
+        .emoji {
+            position: absolute;
+            top: -60px;
+            font-size: 2.5rem;
+            animation: fall linear forwards;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(110vh) rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div style="display:none; background: linear-gradient(180deg, #FF9E7D 0%, #FFD700 100%);"></div>
+
+    <div class="container">
+        <h1 id="stage-text" class="stage-text">Öğlen oldu öğlen...</h1>
+    </div>
+    
+    <div id="hint
